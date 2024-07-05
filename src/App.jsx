@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -14,6 +15,8 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [error, setError] = useState(true)
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
@@ -43,11 +46,16 @@ const App = () => {
       setPassword('')
       blogService.setToken(user.token)
     } catch (error) {
+      setError(true)
+      setNotificationMessage(error.response.data.error)
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 5000);
       console.error(error);
     }
   }
 
-  const handleLogout = async (event) => {
+  const handleLogout = async () => {
     setUser(null)
     window.localStorage.removeItem('loggedBlogappUser')
   }
@@ -66,22 +74,34 @@ const App = () => {
     setTitle('')
     setAuthor('')
     setUrl('')
+    setNotificationMessage(`a new blog ${blogObj.title} by ${blogObj.author} added`)
+    setError(false)
+    setTimeout(() => {
+      setNotificationMessage(null)
+    }, 5000);
   }
 
   if (user === null) {
     return (
-      <LoginForm
-        handleLogin={handleLogin}
-        username={username}
-        setUsername={setUsername}
-        password={password}
-        setPassword={setPassword}
-      />
+      <>
+        <Notification
+          message={notificationMessage}
+          className={error ? 'error' : 'success'} />
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword} />
+      </>
     )
   } else {
     return (
       <div>
         <h2>blogs</h2>
+        <Notification
+          message={notificationMessage}
+          className={error ? 'error' : 'success'} />
         <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
         <form onSubmit={handleCreate}>
           <label>title <input type="text" value={title} onChange={({ target }) => setTitle(target.value)} /></label><br />
