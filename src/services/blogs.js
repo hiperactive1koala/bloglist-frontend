@@ -1,7 +1,7 @@
 import axios from 'axios'
 const baseUrl = '/api/blogs'
 
-let token = null;
+let token = null
 
 const setToken = newToken => {
   token = `Bearer ${newToken}`
@@ -27,8 +27,7 @@ const change = async newObj => {
   }
 
   const response = await axios.put(`${baseUrl}/${newObj.id}`, newObj, config)
-  console.log(response.data);
-    return response.data
+  return response.data
 }
 
 const deleteOne = async id => {

@@ -46,8 +46,8 @@ const App = () => {
       setNotificationMessage(error.response.data.error)
       setTimeout(() => {
         setNotificationMessage(null)
-      }, 5000);
-      console.error(error);
+      }, 5000)
+      console.error(error)
     }
   }
 
@@ -67,19 +67,19 @@ const App = () => {
 
     setTimeout(() => {
       setNotificationMessage(null)
-    }, 5000);
+    }, 5000)
   }
 
   const handleLike = async (blogObj) => {
     const changedBlog = await blogService.change(blogObj)
-    const index = blogs.findIndex(blog => blog.id === blogObj.id);
+    const index = blogs.findIndex(blog => blog.id === blogObj.id)
 
-    let temp_state = [...blogs];
-    temp_state[index] = {...blogObj, likes: changedBlog.likes};
+    let temp_state = [...blogs]
+    temp_state[index] = { ...blogObj, likes: changedBlog.likes }
 
     setBlogs( temp_state )
   }
-  
+
   const handleDelete = async (blogId) => {
     await blogService.deleteOne(blogId)
 
@@ -111,23 +111,23 @@ const App = () => {
         <h2>blogs</h2>
         <Notification
           message={notificationMessage}
-          className={error ? 'error' : 'success'} 
+          className={error ? 'error' : 'success'}
         />
         <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
         <Togglable buttonLabel='new note' ref={blogRef}>
           <BlogForm create={handleCreate} />
         </Togglable>
         <button onClick={sortByLikes}>sort by likes</button>
-        {blogs.map((blog) => 
+        {blogs.map((blog) =>
           <Blog
             key={blog.id}
-            blog={blog} 
+            blog={blog}
             user={user}
             id={openBlog}
             setId={setOpenBlog}
             like={handleLike}
             remove={handleDelete}
-          /> 
+          />
         )}
       </div>
     )

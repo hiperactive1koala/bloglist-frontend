@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 const Blog = ({ blog, id, setId, like, remove, user }) => {
   const blogStyle = {
     paddingTop: 10,
@@ -16,10 +18,10 @@ const Blog = ({ blog, id, setId, like, remove, user }) => {
 
   const handleLike = (event) => {
     event.preventDefault()
-    const updatedBlog = { 
+    const updatedBlog = {
       ...blog,
       likes: blog.likes + 1
-      }
+    }
     like(updatedBlog)
   }
 
@@ -34,7 +36,7 @@ const Blog = ({ blog, id, setId, like, remove, user }) => {
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author} <button onClick={handleView}>{isOpen ? 'hide': 'view'}</button>
-      {isOpen && 
+      {isOpen &&
         <div>
           <a href={blog.url} >{blog.url}</a>
           <div>likes: {blog.likes} <button onClick={handleLike}>like</button></div>
@@ -46,6 +48,14 @@ const Blog = ({ blog, id, setId, like, remove, user }) => {
       }
     </div>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  like: PropTypes.func.isRequired,
+  setId: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  remove: PropTypes.func.isRequired,
 }
 
 export default Blog
