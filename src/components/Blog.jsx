@@ -9,11 +9,12 @@ const Blog = ({ blog, id, setId, like, remove, user }) => {
     marginBottom: 5
   }
 
-  const isOpen = id === blog.id ? true : false
+  let isOpen = id === blog.id ? true : false
+  
 
   const handleView = (event) => {
     event.preventDefault()
-    isOpen ? setId(-1) : setId(blog.id)
+    isOpen ? setId('-1') : setId(blog.id)
   }
 
   const handleLike = (event) => {
@@ -34,28 +35,38 @@ const Blog = ({ blog, id, setId, like, remove, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      {blog.title} {blog.author} <button onClick={handleView}>{isOpen ? 'hide': 'view'}</button>
+    <li style={blogStyle}>
+      <div className='blog-info'>
+        <span>
+          {`${blog.title} ${blog.author} `}
+        </span>
+        <span>
+          <button onClick={handleView} className='show-full'>{isOpen ? 'hide': 'view'}</button>
+        </span>
+      </div>
       {isOpen &&
         <div>
-          <a href={blog.url} >{blog.url}</a>
-          <div>likes: {blog.likes} <button onClick={handleLike}>like</button></div>
+          <a href={blog.url} className='blog-url'>{blog.url}</a>
+          <div>
+            <span className='blog-likes'>likes: {blog.likes}</span>
+            <button onClick={handleLike} id='like-button'>like</button>
+          </div>
           <div>{blog.user.name}</div>
           {user.username === blog.user.username &&
             <button onClick={handleRemove}>remove</button>
           }
         </div>
       }
-    </div>
+    </li>
   )
 }
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  like: PropTypes.func.isRequired,
-  setId: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
-  remove: PropTypes.func.isRequired,
+  // like: PropTypes.func.isRequired,
+  // setId: PropTypes.func.isRequired,
+  // user: PropTypes.object.isRequired,
+  // remove: PropTypes.func.isRequired,
 }
 
 export default Blog
