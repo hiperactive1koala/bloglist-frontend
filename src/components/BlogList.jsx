@@ -1,15 +1,20 @@
-import { useState } from "react";
-import Blog from "./Blog";
-
 import { useSelector, useDispatch } from "react-redux";
 import { SetBlogs } from "../reducers/blogReducer";
+import { Link } from "react-router-dom";
+
+import { Button, ListGroup } from 'react-bootstrap'
 
 const BlogList = () => {
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: "solid",
+    borderWidth: 1,
+    marginBottom: 5,
+  };
+
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
-  const user = useSelector((state) => state.user);
-
-  const [id, setid] = useState("");
 
   const sortByLikes = () => {
     const newBlogs = blogs.slice().sort((a, b) => b.likes - a.likes);
@@ -19,12 +24,22 @@ const BlogList = () => {
   if (blogs === null) return null;
   return (
     <>
-      <button onClick={sortByLikes}>sort by likes</button>
-      <ul data-testid="blog-list">
+      <Button variant="secondary" onClick={sortByLikes}>sort by likes</Button>
+      <ListGroup as='ul' data-testid="blog-list">
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} id={id} setId={setid} user={user} />
+          <ListGroup.Item
+           as={Link} 
+           variant="link" 
+           key={blog.id} 
+           style={blogStyle} 
+           action to={`/blogs/${blog.id}`}
+           >
+            {/* <Link to={`/blogs/${blog.id}`}> */}
+              {blog.title} <strong>{blog.author}</strong>
+            {/* </Link> */}
+          </ListGroup.Item>
         ))}
-      </ul>
+      </ListGroup>
     </>
   );
 };

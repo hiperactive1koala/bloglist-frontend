@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Form, Button, InputGroup } from 'react-bootstrap'
 
 import { useDispatch } from "react-redux";
 import { CreateBlog } from "../reducers/blogReducer";
@@ -21,46 +22,43 @@ const BlogForm = () => {
     setUrl("");
   };
   return (
-    <div>
-      <form onSubmit={handleCreate}>
-        <label>
-          title
-          <input
+    <Form onSubmit={handleCreate}>
+      <Form.Group className="mb-0" controlId="create-blog">
+      <InputGroup className="mb-3">
+        <InputGroup.Text id="title">title</InputGroup.Text>
+          <Form.Control
             data-testid="title"
             type="text"
             value={title}
             placeholder="Title of Blog"
             onChange={({ target }) => setTitle(target.value)}
           />
-        </label>
-        <br />
-        <label>
-          author
-          <input
+      </InputGroup>
+      <InputGroup className="mb-3">
+        <InputGroup.Text id="author">author</InputGroup.Text>
+          <Form.Control
             data-testid="author"
             type="text"
             value={author}
             placeholder="Author of Blog"
             onChange={({ target }) => setAuthor(target.value)}
           />
-        </label>
-        <br />
-        <label>
-          url
-          <input
-            type="text"
+      </InputGroup>
+      <InputGroup className="mb-3">
+        <InputGroup.Text id="url">url</InputGroup.Text>
+          <Form.Control
             data-testid="url"
+            type="text"
             value={url}
             placeholder="Url of Blog"
             onChange={({ target }) => setUrl(target.value)}
           />
-        </label>
-        <br />
-        <button type="submit" id="create-blog">
-          create
-        </button>
-      </form>
-    </div>
+      </InputGroup>
+      </Form.Group>
+      <Button variant="success" className="mb-3" type="submit">
+        Create
+      </Button>
+    </Form>
   );
 };
 

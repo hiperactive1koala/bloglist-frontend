@@ -1,24 +1,19 @@
-import PropTypes from "prop-types";
 
-import { useDispatch } from "react-redux";
-import { DeleteBlog, likeBlog } from "../reducers/blogReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { CommentBlog, LikeBlog } from "../reducers/blogReducer";
+import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { Button, Container, Form, ListGroup } from "react-bootstrap";
 
-const Blog = ({ blog, id, setId, user }) => {
+const Blog = () => {
+  const [comment, setComment] = useState("");
+  const blogID = useParams().id;
+
+  const blog = useSelector(
+    (state) => state.blogs.filter((blog) => blog.id === blogID)[0],
+  );
+
   const dispatch = useDispatch();
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
-  let isOpen = id === blog.id ? true : false;
-
-  const handleView = (event) => {
-    event.preventDefault();
-    isOpen ? setId("-1") : setId(blog.id);
-  };
 
   const handleLike = (event) => {
     event.preventDefault();
@@ -26,53 +21,48 @@ const Blog = ({ blog, id, setId, user }) => {
       ...blog,
       likes: blog.likes + 1,
     };
-    dispatch(likeBlog(updatedBlog));
+    dispatch(LikeBlog(updatedBlog));
   };
 
-  const handleRemove = (event) => {
+  const addBlog = (event) => {
     event.preventDefault();
-
-    if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
-      dispatch(DeleteBlog(blog.id));
-    }
+    dispatch(CommentBlog({ ...blog, comment }));
+    setComment("");
   };
+
+  if (!blog) return null;
 
   return (
-    <li style={blogStyle}>
-      <div className="blog-info">
-        <span>{`${blog.title} ${blog.author} `}</span>
-        <span>
-          <button onClick={handleView} className="show-full">
-            {isOpen ? "hide" : "view"}
-          </button>
-        </span>
-      </div>
-      {isOpen && (
-        <div>
-          <a href={blog.url} className="blog-url">
-            {blog.url}
-          </a>
-          <div>
-            <span className="blog-likes">likes: {blog.likes}</span>
-            <button onClick={handleLike} id="like-button">
-              like
-            </button>
-          </div>
-          <div>{blog.user.name}</div>
-          {user.username === blog.user.username && (
-            <button onClick={handleRemove}>remove</button>
-          )}
-        </div>
+    <Container className="mt-4">
+      <h3 className="h3">
+        {blog.title} {blog.author}
+      </h3>
+      <a variant="info mb-3" href={`http://${blog.url}`} rel='noopener noreferrer' target="_blank">
+        {blog.url}
+      </a>
+      <p className="h5 mb-0">
+        <span className=" align-middle">{blog.likes} likes</span> <Button variant="secondary" onClick={handleLike}>like</Button>
+      </p>
+      <p className="text-muted">added by {blog.user.name}</p>
+      <h3 className="h3">comments</h3>
+      <Form onSubmit={addBlog} className="mb-3">
+        <Form.Control
+        className="mb-3"
+          type="text"
+          value={comment}
+          onChange={({ target }) => setComment(target.value)}
+        />
+        <Button variant="success" type="submit">add comment</Button>
+      </Form>
+      {blog.comments && (
+        <ListGroup as={'ul'}>
+          {blog.comments.map((comment) => (
+            <ListGroup.Item key={comment}>{comment}</ListGroup.Item>
+          ))}
+        </ListGroup>
       )}
-    </li>
+    </Container>
   );
-};
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  // setId: PropTypes.func.isRequired,
-  // user: PropTypes.object.isRequired,
-  // remove: PropTypes.func.isRequired,
 };
 
 export default Blog;
